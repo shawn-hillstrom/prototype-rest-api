@@ -108,6 +108,20 @@ def postResponse():
 		abort(409) # Conflict
 
 # Get responses
+@app.route('/community/posts/responses', methods=['GET'])
+def getResponse():
+	''' Route function for getting responses
+	:request.args: takes arguments in the form qid=int
+	:return: result of query or all responses if no query is specified
+	'''
+	qparams = request.args
+	qid = qparams.get('qid')
+	qr = None
+	if qid:
+		qr = queryDatabase('SELECT * FROM Responses WHERE qid=%s;' % qid)
+	else:
+		qr = queryDatabase('SELECT * FROM Responses;')
+	return jsonify(qr)
 
 # Run the app
 # app.run()

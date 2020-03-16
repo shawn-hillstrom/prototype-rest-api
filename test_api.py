@@ -63,14 +63,14 @@ def test_postQuestion(client):
 def test_getQuestion(client):
 	''' Test cases for getting questions. '''
 
-	# Sub-test 1: Verify an empty returned list
-	test1 = client.get('community/posts/questions')
+	# Sub-test 1: Get empty response
+	test1 = client.get('/community/posts/questions')
 	data1 = test1.get_json()
 	assert len(data1) == 0
 
-	# Sub-test 2: Get a simple question for a returned list
+	# Sub-test 2: Get simple question
 	client.post('/community/posts/questions', data=json.dumps(question0))
-	test2 = client.get('community/posts/questions')
+	test2 = client.get('/community/posts/questions')
 	data2 = test2.get_json()[0]
 	assert 'id' in data2 and data2['id'] == question0['id']
 	assert 'user' in data2 and data2['user'] == question0['user']
@@ -96,3 +96,31 @@ def test_postResponse(client):
 	#Sub-test 4: Post incorrect format
 	test4 = client.post('/community/posts/responses', data=json.dumps(response1))
 	assert test4.status_code == 400 # Bad request
+
+def test_getResponse(client):
+	''' Test cases for posting responses. '''
+
+	# Sub-test 1: Get empty response
+	test1 = client.get('/community/posts/responses')
+	data1 = test1.get_json()
+	assert len(data1) == 0
+
+	# Sub-test 2: Get simple response without query
+	client.post('/community/posts/questions', data=json.dumps(question0))
+	client.post('/community/posts/responses', data=json.dumps(response0))
+	test2 = client.get('/community/posts/responses')
+	data2 = test2.get_json()[0]
+	assert 'id' in data2 and data2['id'] == response0['id']
+	assert 'qid' in data2 and data2['qid'] == response0['qid']
+	assert 'user' in data2 and data2['user'] == response0['user']
+	assert 'postdate' in data2 and data2['postdate'] == response0['postdate']
+	assert 'content' in data2 and data2['content'] == response0['content']
+
+	# Sub-test 3: Get simple response with query
+	test3 = client.get('/community/posts/responses?qid=0')
+	data3 = test3.get_json()[0]
+	assert 'id' in data3 and data3['id'] == response0['id']
+	assert 'qid' in data3 and data3['qid'] == response0['qid']
+	assert 'user' in data3 and data3['user'] == response0['user']
+	assert 'postdate' in data3 and data3['postdate'] == response0['postdate']
+	assert 'content' in data3 and data3['content'] == response0['content']
