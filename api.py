@@ -1,10 +1,15 @@
+# import Flask and associated dependencies
 import flask
+from flask import request, jsonify
 
+# Create the app
 app = flask.Flask(__name__)
-app.config['DEBUG'] = True
 
+# Simple home page for app
 @app.route('/', methods=['GET'])
 def home():
-	return "<h1>Distant Reading Archive</h1><p>This site is a prototype API for a community page.</p>"
+	return """<h1>Jetcake Interview Problem: REST API</h1>
+	<p>This site is a prototype API for a community page.</p>"""
 
-app.run()
+# Run the app
+# app.run()
