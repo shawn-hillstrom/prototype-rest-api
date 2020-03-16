@@ -1,3 +1,8 @@
+/* Make sure existing tables are dropped */
+DROP TABLE IF EXISTS Questions;
+DROP TABLE IF EXISTS Responses;
+DROP TABLE IF EXISTS Bookmarks;
+
 /* Schema for questions table */
 CREATE TABLE Questions (
 	id			int,

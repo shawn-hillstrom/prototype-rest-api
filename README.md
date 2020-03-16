@@ -9,16 +9,16 @@ Prototype REST API for Jetcake interview problem, by Shawn Hillstrom.
 
 ## API Specs:
 
-**community/post/questions**
-- GET - view a subset of questions or all questions if no query is specified
+**community/posts/questions**
+- GET - view all questions
 - POST - create new question
 
-**community/post/responses**
-- GET - view a subset of responses or all responses if no query is specified
+**community/posts/responses**
+- GET - view a set of responses given a question id or all responses if no query is specified
 - POST - create new response
 
 **community/bookmarks**
-- GET - view a subset of bookmarks or all bookmarks if no query is specified
+- GET - view all bookmarks
 
 **NOTE:** PUT and DELETE would also be useful for questions and responses, but are not included here because they are not included in the specifications.
 
