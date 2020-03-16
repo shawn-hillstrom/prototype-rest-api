@@ -32,7 +32,7 @@ Prototype REST API for Jetcake interview problem, by Shawn Hillstrom.
 
 - '"id":int' unique ID for post
 - '"user":string' name of user who is posting
-- '"date":string' date of post (YYYY-MM-DD)
+- '"postdate":string' date of post (YYYY-MM-DD)
 - '"content":string' content of post
 
 If a duplicate ID is received an error is returned.
@@ -48,7 +48,7 @@ If a duplicate ID is received an error is returned.
 - '"id":int' ID of referenced question
 - '"qid":int' ID of referenced question
 - '"user":string' name of user who is posting
-- '"date":string' date of post (YYYY-MM-DD)
+- '"postdate":string' date of post (YYYY-MM-DD)
 - '"content":string' content of post
 
 If a duplicate ID is received an error is returned.
@@ -68,7 +68,7 @@ If a duplicate ID is received an error is returned.
 	{
 		"id": "Unique ID for post",
 		"user": "Name of user who posted",
-		"date": "Date posted (YYYY-MM-DD)",
+		"postdate": "Date posted (YYYY-MM-DD)",
 		"content": "Body of the post"
 	}
 ]
@@ -90,7 +90,7 @@ If a duplicate ID is received an error is returned.
 		"id": "Unique ID for post",
 		"qid": "ID of referenced question",
 		"user": "Name of user who posted",
-		"date": "Date posted (YYYY-MM-DD)",
+		"postdate": "Date posted (YYYY-MM-DD)",
 		"content": "Body of the post"
 	}
 ]
@@ -106,8 +106,6 @@ If a duplicate ID is received an error is returned.
 
 - '"type:string' type of post ("question" or "response")
 - '"id":int' unique ID for post
-
-If a duplicate ID is received an error is returned.
 
 ### View bookmarks
 
