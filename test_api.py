@@ -7,7 +7,7 @@ from api import app, init_db
 
 # Test data
 question0 = { # Simple question set
-	"id": "0",
+	"id": 0,
 	"user": "Bob",
 	"postdate": "2020-02-28",
 	"content": "Hello World!"
@@ -53,17 +53,17 @@ def test_postQuestion(client):
 def test_getQuestion(client):
 	''' Test case for getting questions. '''
 
-	# Define data sets
-	dataSimple = {
-		"id": "0",
-		"user": "Bob",
-		"postdate": "2020-02-28",
-		"content": "Hello World!"
-	}
-
-	# Post simple data
-	client.post('/community/posts/questions', data=json.dumps(dataSimple))
-
+	# Sub-test 1: Verify an empty returned list
 	response1 = client.get('community/posts/questions')
-	assert response1.status_code == 200 #Ok
+	data1 = response1.get_json()
+	assert len(data1) == 0
+
+	# Sub-test 2: Get a simple question for a returned list
+	client.post('/community/posts/questions', data=json.dumps(question0))
+	response2 = client.get('community/posts/questions')
+	data2 = response2.get_json()[0]
+	assert 'id' in data2 and data2['id'] == question0['id']
+	assert 'user' in data2 and data2['user'] == question0['user']
+	assert 'postdate' in data2 and data2['postdate'] == question0['postdate']
+	assert 'content' in data2 and data2['content'] == question0['content']
 
