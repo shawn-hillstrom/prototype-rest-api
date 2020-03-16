@@ -80,10 +80,34 @@ def postQuestion():
 @app.route('/community/posts/questions', methods=['GET'])
 def getQuestion():
 	''' Route function for getting questions
-	:return: result of query or 400 on bad request
+	:return: all results stored in Questions
 	'''
 	qr = queryDatabase('SELECT * FROM Questions;')
 	return jsonify(qr)
+
+# Post responses
+@app.route('/community/posts/responses', methods=['POST'])
+def postResponse():
+	''' Route function for posting responses
+	:return: Arguments, 200 on success, 400 on bad request, 404 on qid does not exist, 409 on conflict
+	'''
+	rd = request.get_json(force=True)
+	postid = rd['id'] if 'id' in rd else None
+	qid = rd['qid'] if 'qid' in rd else None
+	user = rd['user'] if 'user' in rd else None
+	postdate = rd['postdate'] if 'postdate' in rd else None
+	content = rd['content'] if 'content' in rd else None
+	if None in (postid, qid, user, postdate, content):
+		abort(400) # Bad request
+	if len(queryDatabase('SELECT * FROM Questions WHERE id=%i;' % (qid))) == 0:
+		abort(404) # Not found
+	try:
+		queryDatabase('INSERT INTO Responses VALUES (?, ?, ?, ?, ?)', args=(postid, qid, user, postdate, content))
+		return rd # Success
+	except:
+		abort(409) # Conflict
+
+# Get responses
 
 # Run the app
 # app.run()
