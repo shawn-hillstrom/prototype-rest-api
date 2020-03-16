@@ -9,11 +9,11 @@ Prototype REST API for Jetcake interview problem, by Shawn Hillstrom.
 
 ## API Specs:
 
-**community/post/questions**
+**community/posts/questions**
 - GET - view a subset of questions or all questions if no query is specified
 - POST - create new question
 
-**community/post/responses**
+**community/posts/responses**
 - GET - view a subset of responses or all responses if no query is specified
 - POST - create new response
 
