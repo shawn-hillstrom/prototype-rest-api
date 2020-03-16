@@ -6,13 +6,23 @@ import json
 from api import app, init_db
 
 # Test data
-question0 = { # Simple question set
+question0 = { # Simple question
 	"id": 0,
 	"user": "Bob",
 	"postdate": "2020-02-28",
 	"content": "Hello World!"
 }
-question1 = { # Incorrect question set
+question1 = { # Incorrect question
+	"incorrect": "field"
+}
+response0 = { # Simple response
+	"id": 0,
+	"qid": 0,
+	"user": "Sally",
+	"postdate": "2020-02-29",
+	"content": "Hello Bob!"
+}
+response1 = { # Incorrect response
 	"incorrect": "field"
 }
 
@@ -39,31 +49,78 @@ def test_postQuestion(client):
 	''' Test cases for posting questions. '''
 
 	# Sub-test 1: Post simple question
-	response1 = client.post('/community/posts/questions', data=json.dumps(question0))
-	assert response1.status_code == 200 # Ok
+	test1 = client.post('/community/posts/questions', data=json.dumps(question0))
+	assert test1.status_code == 200 # Ok
 
-	# Sub-test 2: Post duplicate question
-	response2 = client.post('/community/posts/questions', data=json.dumps(question0))
-	assert response2.status_code == 409 # Conflict
+	# Sub-test 2: Post duplicate question id
+	test2 = client.post('/community/posts/questions', data=json.dumps(question0))
+	assert test2.status_code == 409 # Conflict
 
 	# Sub-test 3: Post incorrect format
-	response3 = client.post('/community/posts/questions', data=json.dumps(question1))
-	assert response3.status_code == 400 # Bad request
+	test3 = client.post('/community/posts/questions', data=json.dumps(question1))
+	assert test3.status_code == 400 # Bad request
 
 def test_getQuestion(client):
-	''' Test case for getting questions. '''
+	''' Test cases for getting questions. '''
 
-	# Sub-test 1: Verify an empty returned list
-	response1 = client.get('community/posts/questions')
-	data1 = response1.get_json()
+	# Sub-test 1: Get empty response
+	test1 = client.get('/community/posts/questions')
+	data1 = test1.get_json()
 	assert len(data1) == 0
 
-	# Sub-test 2: Get a simple question for a returned list
+	# Sub-test 2: Get simple question
 	client.post('/community/posts/questions', data=json.dumps(question0))
-	response2 = client.get('community/posts/questions')
-	data2 = response2.get_json()[0]
+	test2 = client.get('/community/posts/questions')
+	data2 = test2.get_json()[0]
 	assert 'id' in data2 and data2['id'] == question0['id']
 	assert 'user' in data2 and data2['user'] == question0['user']
 	assert 'postdate' in data2 and data2['postdate'] == question0['postdate']
 	assert 'content' in data2 and data2['content'] == question0['content']
 
+def test_postResponse(client):
+	''' Test cases for posting responses. '''
+
+	# Sub-test 1: Post response with invalid qid
+	test1 = client.post('/community/posts/responses', data=json.dumps(response0))
+	assert test1.status_code == 404 # Not found
+
+	# Sub-test 2: Post simple response
+	client.post('/community/posts/questions', data=json.dumps(question0))
+	test2 = client.post('/community/posts/responses', data=json.dumps(response0))
+	assert test2.status_code == 200 # Ok
+
+	# Sub-test 3: Post duplicate response id
+	test3 = client.post('/community/posts/responses', data=json.dumps(response0))
+	assert test3.status_code == 409 # Conflict
+
+	#Sub-test 4: Post incorrect format
+	test4 = client.post('/community/posts/responses', data=json.dumps(response1))
+	assert test4.status_code == 400 # Bad request
+
+def test_getResponse(client):
+	''' Test cases for posting responses. '''
+
+	# Sub-test 1: Get empty response
+	test1 = client.get('/community/posts/responses')
+	data1 = test1.get_json()
+	assert len(data1) == 0
+
+	# Sub-test 2: Get simple response without query
+	client.post('/community/posts/questions', data=json.dumps(question0))
+	client.post('/community/posts/responses', data=json.dumps(response0))
+	test2 = client.get('/community/posts/responses')
+	data2 = test2.get_json()[0]
+	assert 'id' in data2 and data2['id'] == response0['id']
+	assert 'qid' in data2 and data2['qid'] == response0['qid']
+	assert 'user' in data2 and data2['user'] == response0['user']
+	assert 'postdate' in data2 and data2['postdate'] == response0['postdate']
+	assert 'content' in data2 and data2['content'] == response0['content']
+
+	# Sub-test 3: Get simple response with query
+	test3 = client.get('/community/posts/responses?qid=0')
+	data3 = test3.get_json()[0]
+	assert 'id' in data3 and data3['id'] == response0['id']
+	assert 'qid' in data3 and data3['qid'] == response0['qid']
+	assert 'user' in data3 and data3['user'] == response0['user']
+	assert 'postdate' in data3 and data3['postdate'] == response0['postdate']
+	assert 'content' in data3 and data3['content'] == response0['content']
