@@ -80,9 +80,16 @@ def postQuestion():
 @app.route('/community/posts/questions', methods=['GET'])
 def getQuestion():
 	''' Route function for getting questions
+	:request.args: takes argument in the form id=int
 	:return: all results stored in Questions
 	'''
-	qr = queryDatabase('SELECT * FROM Questions;')
+	qparams = request.args
+	postid = qparams.get('id')
+	query = 'SELECT * FROM Questions'
+	if postid:
+		query += ' WHERE id=%s' % (postid)
+	query += ';'
+	qr = queryDatabase(query)
 	return jsonify(qr)
 
 # Post responses
@@ -111,12 +118,15 @@ def postResponse():
 @app.route('/community/posts/responses', methods=['GET'])
 def getResponse():
 	''' Route function for getting responses
-	:request.args: takes arguments in the form qid=int
-	:return: result of query or all responses if no query is specified
+	:request.args: takes arguments in the form id=int or qid=int where id takes precedence
+	:return: result of query or all responses if no queries are specified
 	'''
 	qparams = request.args
+	postid = qparams.get('id')
 	qid = qparams.get('qid')
 	query = 'SELECT * FROM Responses'
+	if postid:
+		query += ' WHERE id=%s' % (postid)
 	if qid:
 		query += ' WHERE qid=%s' % (qid)
 	query += ';'
@@ -145,6 +155,16 @@ def saveBookmark():
 		abort(400) # Bad Request
 	queryDatabase('INSERT INTO Bookmarks VALUES (?, ?, ?)', args=(posttype, postid, user))
 	return rd
+
+# Get bookmarks
+@app.route('/community/posts/bookmarks', methods=['GET'])
+def getBookmark():
+	''' Route function for getting bookmarks
+	:return: all results stored in Bookmarks along with their associated entries
+		in Questions or Responses
+	'''
+	qr = queryDatabase('SELECT * FROM Bookmarks')
+	return jsonify(qr)
 
 # Run the app
 # app.run()

@@ -11,11 +11,11 @@ Prototype REST API for Jetcake interview problem, by Shawn Hillstrom.
 
 **community/posts/questions**
 - POST - create new question
-- GET - view all questions
+- GET - view a question based on id or view all questions if no query is specified
 
 **community/posts/responses**
 - POST - create new response
-- GET - view a set of responses given a question id or all responses if no query is specified
+- GET - view a set of responses given a response id or a question id, or all responses if no query is specified
 
 **community/posts/bookmarks**
 - POST - create new bookmark
@@ -124,8 +124,7 @@ If the ID does not exist in the Questions database or the Responses database, an
 	{
 		"type": "Type of post (\"question\" or \"response\")",
 		"id": "Unique ID for post",
-		"user": "User who bookmarked the post",
-		"data": "JSON object containing the responses of either 'GET /community/posts/questions' or 'GET /community/posts/responses'"
+		"user": "User who bookmarked the post"
 	}
 ]
 ```
