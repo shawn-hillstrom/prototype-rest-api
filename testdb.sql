@@ -26,5 +26,6 @@ CREATE TABLE Responses (
 /* Schema for bookmarks table */
 CREATE TABLE Bookmarks (
 	type		varchar(16),
-	id			int
+	id			int,
+	user		varchar(255)
 );

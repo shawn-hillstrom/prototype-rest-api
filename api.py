@@ -80,16 +80,23 @@ def postQuestion():
 @app.route('/community/posts/questions', methods=['GET'])
 def getQuestion():
 	''' Route function for getting questions
+	:request.args: takes argument in the form id=int
 	:return: all results stored in Questions
 	'''
-	qr = queryDatabase('SELECT * FROM Questions;')
+	qparams = request.args
+	postid = qparams.get('id')
+	query = 'SELECT * FROM Questions'
+	if postid:
+		query += ' WHERE id=%s' % (postid)
+	query += ';'
+	qr = queryDatabase(query)
 	return jsonify(qr)
 
 # Post responses
 @app.route('/community/posts/responses', methods=['POST'])
 def postResponse():
 	''' Route function for posting responses
-	:return: Arguments, 200 on success, 400 on bad request, 404 on qid does not exist, 409 on conflict
+	:return: Arguments, 200 on success, 400 on bad request, 404 on qid not found, 409 on conflict
 	'''
 	rd = request.get_json(force=True)
 	postid = rd['id'] if 'id' in rd else None
@@ -111,16 +118,52 @@ def postResponse():
 @app.route('/community/posts/responses', methods=['GET'])
 def getResponse():
 	''' Route function for getting responses
-	:request.args: takes arguments in the form qid=int
-	:return: result of query or all responses if no query is specified
+	:request.args: takes arguments in the form id=int or qid=int where id takes precedence
+	:return: result of query or all responses if no queries are specified
 	'''
 	qparams = request.args
+	postid = qparams.get('id')
 	qid = qparams.get('qid')
-	qr = None
+	query = 'SELECT * FROM Responses'
+	if postid:
+		query += ' WHERE id=%s' % (postid)
 	if qid:
-		qr = queryDatabase('SELECT * FROM Responses WHERE qid=%s;' % qid)
+		query += ' WHERE qid=%s' % (qid)
+	query += ';'
+	qr = queryDatabase(query)
+	return jsonify(qr)
+
+# Save bookmarks
+@app.route('/community/posts/bookmarks', methods=['POST'])
+def saveBookmark():
+	''' Route function for saving bookmarks
+	:return: Arguments, 200 on success, 400 on bad request, 404 on id not found
+	'''
+	rd = request.get_json(force=True)
+	posttype = rd['type'] if 'type' in rd else None
+	postid = rd['id'] if 'id' in rd else None
+	user = rd['user'] if 'user' in rd else None
+	if None in (posttype, postid, user):
+		abort(400) # Bad request
+	if posttype == 'Questions':
+		if len(queryDatabase('SELECT * FROM Questions WHERE id=%i' % (postid))) == 0:
+			abort(404) # Not found
+	elif posttype == 'Responses':
+		if len(queryDatabase('SELECT * FROM Responses WHERE id=%i' % (postid))) == 0:
+			abort(404) # Not found
 	else:
-		qr = queryDatabase('SELECT * FROM Responses;')
+		abort(400) # Bad Request
+	queryDatabase('INSERT INTO Bookmarks VALUES (?, ?, ?)', args=(posttype, postid, user))
+	return rd
+
+# Get bookmarks
+@app.route('/community/posts/bookmarks', methods=['GET'])
+def getBookmark():
+	''' Route function for getting bookmarks
+	:return: all results stored in Bookmarks along with their associated entries
+		in Questions or Responses
+	'''
+	qr = queryDatabase('SELECT * FROM Bookmarks')
 	return jsonify(qr)
 
 # Run the app
