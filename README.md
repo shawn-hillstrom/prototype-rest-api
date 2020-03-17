@@ -2,10 +2,79 @@
 Prototype REST API for Jetcake interview problem, by Shawn Hillstrom.
 
 ## Dependencies:
-- Flask
-- sqlite3
-- jsonify (from Flask)
-- request (from Flask)
+
+### Flask (v1.1.1)
+
+**Install with**
+```bash
+pip install flask
+```
+
+### pytest (v5.4.1)
+
+**Install with**
+```bash 
+pip install pytest
+```
+
+### sqlite3 (v3.28.0)
+
+sqlite3 comes pre-installed on the latest versions of most Linux distros and Mac OS X.
+
+## How To Use:
+
+**Step 1.** Pull the repository.
+
+**Step 2.** After the dependencies are installed you can run the set of unit tests I created with this application by running
+```bash
+pytest -rA
+```
+
+**Step 3.** To run individual unit tests run
+```bash
+pytest test_api.py::test_func_name
+```
+
+### List of Test Functions and Associated Unit Tests
+
+- test_home
+	1. Check to see if GET returns "Ok" (200).
+
+- test_postQuestion
+	1. Post a simple question and check to see if POST returns "Ok" (200).
+	2. Post a duplicate question and check to see if POST returns "Conflict" (409).
+	3. Post an incorrect question format and check to see if POST returns "Bad request" (400).
+
+- test_getQuestion
+	1. Check to see if the API returns an empty request response when empty.
+	2. Check to see if the API can return a simple test question.
+	3. Check to see if the API can return a simple test question based on a query.
+
+- test_postResponse
+	1. Post a response with an invalid question ID and check to see if POST returns "Not found" (404).
+	2. Post a simple response and check to see if POST returns "Ok" (200).
+	3. Post a duplicate response and check to see if POST returns "Conflict" (409).
+	4. Post an incorrect response format and check to see if POST returns "Bad request" (400).
+
+- test_getResponse
+	1. Check to see if the API returns an empty request response when empty.
+	2. Check to see if the API can return a simple response.
+	3. Check to see if the API can return a simple test question based on a query involving the response ID.
+	4. Check to see if the API can return a simple test question based on a query involving the referenced question ID.
+
+- test_saveBookmark
+	1. Post a bookmark with an invalid question ID and check to see if POST returns "Not found" (404).
+	2. Post a bookmark with an invalid response ID and check to see if POST returns "Not found" (404).
+	3. Post a bookmark to a simple question and check to see if POST returns "Ok" (200).
+	4. Post a bookmark to a simple response and check to see if POST returns "Ok" (200).
+	5. Post an incorrect bookmark format and check to see if POST returns "Bad request" (400).
+
+- test_getBookmark
+	1. Check to see if the API returns an empty request response when empty.
+	2. Check to see if the API can return the correct data from a simple question stored in bookmarks.
+	3. Check to see if the API can return the correct data from a simple response stored in bookmarks.
+
+**NOTE:** When running individual test functions, all specified sub-tests will be run.
 
 ## API Specs:
 
