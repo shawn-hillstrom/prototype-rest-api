@@ -25,6 +25,19 @@ response0 = { # Simple response
 response1 = { # Incorrect response
 	"incorrect": "field"
 }
+bookmark0 = { # Simple question bookmark
+	"type": "Questions",
+	"id": 0,
+	"user": "Bob"
+}
+bookmark1 = { # Simple response bookmark
+	"type": "Responses",
+	"id": 0,
+	"user": "Bob"
+}
+bookmark2 = { # Incorrect bookmark
+	"incorrect": "field"
+}
 
 @pytest.fixture
 def client():
@@ -124,3 +137,28 @@ def test_getResponse(client):
 	assert 'user' in data3 and data3['user'] == response0['user']
 	assert 'postdate' in data3 and data3['postdate'] == response0['postdate']
 	assert 'content' in data3 and data3['content'] == response0['content']
+
+def test_saveBookmark(client):
+	''' Test cases for saving bookmarks. '''
+
+	# Sub-test 1: Save question with invalid id
+	test1 = client.post('/community/posts/bookmarks', data=json.dumps(bookmark0))
+	assert test1.status_code == 404 # Not found
+
+	# Sub-test 2: Save response with invalid id
+	test2 = client.post('/community/posts/bookmarks', data=json.dumps(bookmark1))
+	assert test2.status_code == 404 # Not found
+
+	# Sub-test 3: Save simple question
+	client.post('/community/posts/questions', data=json.dumps(question0))
+	test3 = client.post('/community/posts/bookmarks', data=json.dumps(bookmark0))
+	assert test3.status_code == 200 # Ok
+
+	# Sub-test 4: Save simple response
+	client.post('/community/posts/responses', data=json.dumps(response0))
+	test4 = client.post('/community/posts/bookmarks', data=json.dumps(bookmark1))
+	assert test4.status_code == 200 # Ok
+
+	# Sub-test 5: Save incorrect format
+	test5 = client.post('/community/posts/bookmarks', data=json.dumps(bookmark2))
+	assert test5.status_code == 400 # Bad request

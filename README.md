@@ -10,17 +10,18 @@ Prototype REST API for Jetcake interview problem, by Shawn Hillstrom.
 ## API Specs:
 
 **community/posts/questions**
-- GET - view all questions
 - POST - create new question
+- GET - view all questions
 
 **community/posts/responses**
-- GET - view a set of responses given a question id or all responses if no query is specified
 - POST - create new response
+- GET - view a set of responses given a question id or all responses if no query is specified
 
-**community/bookmarks**
+**community/posts/bookmarks**
+- POST - create new bookmark
 - GET - view all bookmarks
 
-**NOTE:** PUT and DELETE would also be useful for questions and responses, but are not included here because they are not included in the specifications.
+**NOTE:** PUT and DELETE would also be useful for questions and responses and DELETE would be useful for bookmarks, but these are not included here because they are not included in the problem parameters.
 
 ### Post questions for other users
 
@@ -104,8 +105,11 @@ If a duplicate ID is received an error is returned.
 
 **Arguments**
 
-- '"type:string' type of post ("question" or "response")
+- '"type:string' type of post ("Questions" or "Responses")
 - '"id":int' unique ID for post
+- '"user":string' user who bookmarked the post
+
+If the ID does not exist in the Questions database or the Responses database, an error is returned.
 
 ### View bookmarks
 
@@ -120,6 +124,7 @@ If a duplicate ID is received an error is returned.
 	{
 		"type": "Type of post (\"question\" or \"response\")",
 		"id": "Unique ID for post",
+		"user": "User who bookmarked the post",
 		"data": "JSON object containing the responses of either 'GET /community/posts/questions' or 'GET /community/posts/responses'"
 	}
 ]
