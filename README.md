@@ -1,5 +1,5 @@
 # prototype-rest-api
-Prototype REST API for Jetcake interview problem, by Shawn Hillstrom.
+A prototype REST API, by Shawn Hillstrom.
 
 ## Dependencies:
 
@@ -23,7 +23,7 @@ sqlite3 comes pre-installed on the latest versions of most Linux distros and Mac
 
 ## How To Use:
 
-**Step 1.** Pull the repository.
+**Step 1.** Clone the repository.
 
 **Step 2.** After the dependencies are installed you can run the set of unit tests I created with this application by running
 ```bash
@@ -191,7 +191,7 @@ If the ID does not exist in the Questions database or the Responses database, an
 ```json
 [
 	{
-		"type": "Type of post (\"question\" or \"response\")",
+		"type": "Type of post ('Questions' or 'Responses')",
 		"id": "Unique ID for post",
 		"user": "User who bookmarked the post"
 	}
