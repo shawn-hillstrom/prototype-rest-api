@@ -54,7 +54,7 @@ def home():
 	''' Route function for home page
 	:return: Markup for simple HTML display, 200 on success
 	'''
-	return """<h1>Jetcake Interview Problem: REST API</h1>
+	return """<h1>Prototype REST API</h1>
 	<p>This site is a prototype API for a community page.</p>"""
 
 # Post questions
